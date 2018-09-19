@@ -1,0 +1,17 @@
+group 'me.ivmg'
+version '0.3.0'
+
+apply plugin: 'kotlin'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "com.squareup.retrofit2:retrofit:${libs.retrofit}"
+    compile "com.squareup.retrofit2:converter-gson:${libs.retrofit}"
+
+    compile "com.squareup.okhttp3:logging-interceptor:${libs.okhttp}"
+
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${core.kotlin}"
+}

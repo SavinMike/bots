@@ -1,0 +1,38 @@
+buildscript {
+    ext {
+        core = [
+                kotlin: '1.2.61',
+        ]
+        libs = [
+                retrofit: "2.3.0",
+                ktor    : '0.9.4',
+                okhttp  : "3.9.1",
+        ]
+    }
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version "1.2.61"
+}
+
+allprojects {
+    group 'me.smu.bot'
+    version '0.0.1'
+
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:${core.kotlin}"
+}
