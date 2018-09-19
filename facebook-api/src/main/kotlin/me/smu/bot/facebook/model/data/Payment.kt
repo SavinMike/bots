@@ -57,5 +57,59 @@ data class PaymentCredential(val providerType: PaymentProviderType,
                              val tokenExpiryYear: String?,
                              val fbPaymentId: String?)
 
+/**
+ * @property currency: Currency for price.
+ * @property isTestPayment: Whether this is a test payment. Once set to true, the charge will be a dummy charge.
+ * @property merchantName: Name of merchant
+ * @property requestedUserInfo: Information requested from person that will render in the dialog.
+ * @property priceList: List of objects used to calculate total price. Each label is rendered as a line item in the checkout dialog.
+ */
+data class PaymentSummary(val currency: String,
+                          val isTestPayment: Boolean? = null,
+                          val paymentType: PaymentType,
+                          val merchantName: String,
+                          val requestedUserInfo: List<PaymentRequestedUserInfo>,
+                          val priceList: List<LabelPrice>)
+
+/**
+ * @property label: Label for line item.
+ * @property amount: Amount of line item.
+ */
+data class LabelPrice(val label: String,
+                      val amount: BigDecimal)
+
+enum class PaymentRequestedUserInfo {
+    shipping_address, contact_name, contact_phone, contact_email
+}
+
+enum class PaymentType {
+    FIXED_AMOUNT, FLEXIBLE_AMOUNT
+}
+
 data class Amount(val currency: String,
                   val amount: BigDecimal)
+
+/**
+ * @property payload: Metadata defined in the Buy Button.
+ * @property shippingAddress: The person's shipping address.
+ */
+data class CheckoutInfo(val payload: String,
+                        val shippingAddress: ShippingAddress)
+
+
+/**
+ * @property id: ID of shipping address
+ * @property country: Shipping address country
+ * @property city: Shipping address city
+ * @property street1: Shipping address street, first line
+ * @property street2: Shipping address street, second line
+ * @property state: Shipping address state
+ * @property postalCode: Shipping address postal code
+ */
+data class ShippingAddress(val id: String,
+                           val country: String,
+                           val city: String,
+                           val street1: String,
+                           val street2: String,
+                           val state: String,
+                           val postalCode: String)

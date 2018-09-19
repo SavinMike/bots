@@ -5,6 +5,9 @@ package me.smu.bot.facebook.model.data
 import java.io.File
 
 /**
+ * Type of attachment, may be [AttachmentType.image], [AttachmentType.audio], [AttachmentType.video], [AttachmentType.file]
+ * or [AttachmentType.template]. For assets, max file size is 25MB.
+ *
  * @property type: audio, fallback, file, image, location or video
  * @property payload: multimedia or location payload
  */
@@ -38,6 +41,17 @@ data class UploadPayload(val isReusable: Boolean,
                          val file: File? = null) : Payload()
 
 /**
+ * @property sharable: Set to true to enable the native share button in Messenger for the template message.
+ */
+abstract class TemplatePayload(val templateType: TemplateType) : Payload() {
+    abstract val sharable: Boolean?
+}
+
+enum class TemplateType {
+    button, generic, list, media
+}
+
+/**
  * @property title: title of the attachment
  * @property url: URL to the attachment
  * @property type: fallback
@@ -46,14 +60,5 @@ data class Fallback(
         val title: String,
         val url: String,
         val type: AttachmentType)
-
-enum class TemplateType {
-    button
-}
-
-data class ButtonTemplatePayload(val text: String,
-                                 val buttons: List<Button>) : Payload() {
-    val templateType: TemplateType = TemplateType.button
-}
 
 

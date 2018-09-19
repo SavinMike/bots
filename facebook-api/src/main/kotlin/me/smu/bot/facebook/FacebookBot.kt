@@ -1,40 +1,20 @@
 package me.smu.bot.facebook
 
-import me.smu.bot.facebook.model.Server
-import me.smu.bot.facebook.model.data.User
 import me.smu.bot.facebook.model.dispatcher.UpdateDispatcher
-import me.smu.bot.facebook.model.exception.ApiException
 import me.smu.bot.facebook.model.mechanism.WebHookBuilder
 import me.smu.bot.facebook.model.mechanism.Webhook
-import me.smu.bot.facebook.model.network.FacebookHttpService
-import me.smu.bot.facebook.model.network.api.SendApi
-import me.smu.bot.facebook.model.network.api.data.MessageType
-import me.smu.bot.facebook.model.network.api.data.SendMessageRequest
-import me.smu.bot.facebook.model.network.api.data.SendingMessage
+import me.smu.bot.facebook.model.network.client.FacebookHttpClient
+import me.smu.bot.facebook.model.network.client.api.ApiProvider
+import me.smu.bot.facebook.model.network.client.controller.ApiControllerProvider
+import me.smu.bot.facebook.model.network.client.controller.AttachmentUploadController
+import me.smu.bot.facebook.model.network.client.controller.ControllerProvider
+import me.smu.bot.facebook.model.network.client.controller.SendController
+import me.smu.bot.facebook.model.network.webhook.WebhookServer
 
-class FacebookBot(accessToken: String,
-                  verifyToken: String,
-                  dispatcher: UpdateDispatcher,
-                  webhook: Webhook) {
-    private val server = Server(webhook, verifyToken, dispatcher.apply { facebookBot = this@FacebookBot })
-    private val httpService = FacebookHttpService(accessToken)
-
-    private val sendApi: SendApi = SendApi(httpService)
-
-    suspend fun sendMessage(recipient: User, text: String) {
-        sendApi.sendMessage(SendMessageRequest(MessageType.MESSAGE_TAG, recipient, SendingMessage(text = text)))
-    }
-
-    suspend fun sendMessage(recipient: User, message: SendingMessage): Boolean {
-        return try {
-            sendApi.sendMessage(SendMessageRequest(recipient = recipient, message = message))
-            println("sendMessage success")
-            true
-        } catch (e: ApiException) {
-            println("sendMessage failed: $e")
-            false
-        }
-    }
+class FacebookBot internal constructor(private val server: WebhookServer,
+                                       controllerProvider: ControllerProvider) :
+        SendController by controllerProvider.sendController,
+        AttachmentUploadController by controllerProvider.attachmentUploadController {
 
     fun startWebHook(wait: Boolean = true) {
         server.start(wait)
@@ -61,6 +41,12 @@ class FacebookBuilder {
 
 
     fun build(): FacebookBot {
-        return FacebookBot(accessToken, verifyToken, dispatcher, webhook)
+        val webhookServer = WebhookServer(webhook, verifyToken, dispatcher)
+        val facebookHttpService = FacebookHttpClient(accessToken)
+
+        val controllerProvider: ControllerProvider = ApiControllerProvider(ApiProvider(facebookHttpService))
+        val facebookBot = FacebookBot(webhookServer, controllerProvider)
+        dispatcher.facebookBot = facebookBot
+        return facebookBot
     }
 }
