@@ -2,8 +2,6 @@ package me.smu.bot.facebook.model.network.api.data
 
 import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
-import me.smu.bot.facebook.model.data.Message
-import me.smu.bot.facebook.model.data.callback.MessagesEvent
 import me.smu.bot.facebook.model.data.callback.WebhookEvent
 
 @Serializable

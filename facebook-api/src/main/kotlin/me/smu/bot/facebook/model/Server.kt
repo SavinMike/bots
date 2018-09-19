@@ -86,7 +86,7 @@ internal class Server(webhook: Webhook,
                         }
                     } catch (e: Exception) {
                         // Returns a '404 Not Found' if event is not from a page subscription
-                        dispatcher.handleError(ApiException(e))
+                        dispatcher.handleError(ApiException(throwable = e))
                         call.response.status(HttpStatusCode.Forbidden)
                     }
 

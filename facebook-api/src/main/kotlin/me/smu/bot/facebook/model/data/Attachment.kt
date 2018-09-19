@@ -1,6 +1,7 @@
+@file:Suppress("EnumEntryName")
+
 package me.smu.bot.facebook.model.data
 
-import com.google.gson.annotations.SerializedName
 import java.io.File
 
 /**
@@ -8,21 +9,10 @@ import java.io.File
  * @property payload: multimedia or location payload
  */
 data class Attachment(val type: AttachmentType,
-                      val payload: UploadPayload)
+                      val payload: Payload)
 
 enum class AttachmentType {
-    @SerializedName("audio")
-    AUDIO,
-    @SerializedName("fallback")
-    FALLBACK,
-    @SerializedName("file")
-    FILE,
-    @SerializedName("image")
-    IMAGE,
-    @SerializedName("LOCATION")
-    LOCATION,
-    @SerializedName("VIDEO")
-    VIDEO
+    audio, fallback, file, image, location, video, template
 }
 
 sealed class Payload
@@ -45,7 +35,7 @@ data class LocationPayload(val lat: Double,
 
 data class UploadPayload(val isReusable: Boolean,
                          val url: String? = null,
-                         val file: File? = null): Payload()
+                         val file: File? = null) : Payload()
 
 /**
  * @property title: title of the attachment
@@ -56,3 +46,14 @@ data class Fallback(
         val title: String,
         val url: String,
         val type: AttachmentType)
+
+enum class TemplateType {
+    button
+}
+
+data class ButtonTemplatePayload(val text: String,
+                                 val buttons: List<Button>) : Payload() {
+    val templateType: TemplateType = TemplateType.button
+}
+
+

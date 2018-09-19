@@ -1,6 +1,6 @@
 package me.smu.bot.facebook.model.data.callback
 
-import me.smu.bot.facebook.model.data.Message
+import me.smu.bot.facebook.model.data.Attachment
 import me.smu.bot.facebook.model.data.User
 
 /**
@@ -12,4 +12,15 @@ import me.smu.bot.facebook.model.data.User
 data class MessagesEvent(override val sender: User,
                          override val recipient: User,
                          override val timestamp: Long,
-                         val message: Message?): WebhookEvent
+                         val message: Message?) : WebhookEvent
+
+/**
+ * @property mid: Message ID
+ * @property text: Text of message
+ * @property attachments: Array containing attachment data
+ * @property quickReply: Optional custom data provided by the sending app
+ */
+data class Message(val mid: String? = null,
+                   val text: String? = null,
+                   val attachments: List<Attachment>? = null,
+                   val quickReply: Any? = null)

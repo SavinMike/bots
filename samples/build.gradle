@@ -11,9 +11,9 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation "io.ktor:ktor-server-netty:${libs.ktor}"
     implementation project(":facebook-api")
     implementation project(":bot-core")
+    implementation "io.ktor:ktor-server-netty:${libs.ktor}"
     implementation "ch.qos.logback:logback-classic:1.+"
 }
 
