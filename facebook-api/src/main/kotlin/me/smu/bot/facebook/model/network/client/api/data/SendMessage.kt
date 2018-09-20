@@ -13,6 +13,8 @@ import me.smu.bot.facebook.model.network.client.api.data.base.FacebookResponse
  * @property senderAction: Message state to display to the user. When using [senderAction], recipient should be the only
  *                         other property set in the request.
  * @property notificationType: Push notification type. Defaults to [NotificationType.REGULAR]
+ * @property dynamicText: Currently, personalization is only available for [me.smu.bot.facebook.model.network.client.controller.BroadcastController]
+ *                        text messages. The template strings will not work for other message types, such as template messages.
  * @property tag: The message tag string. See [Message Tags](https://developers.facebook.com/docs/messenger-platform/send-messages/message-tags).
  *
  * @see Recipient
@@ -23,6 +25,7 @@ data class SendMessageRequest(val messageType: MessageType? = null,
                               val message: SendingMessage? = null,
                               val senderAction: SenderAction? = null,
                               val notificationType: NotificationType? = null,
+                              val dynamicText: DynamicText? = null,
                               val tag: String? = null)
 
 /**
@@ -122,3 +125,16 @@ enum class MessageType {
     @SerializedName("MESSAGE_TAG")
     MESSAGE_TAG
 }
+
+/**
+ * The Broadcast API supports the following template strings that can be used to include the message recipient's name
+ * in broadcast messages:
+ * 1. {{first_name}}
+ * 2. {{last_name}}
+ *
+ * To create a personalized text message, use the [DynamicText] object to define your message.
+ * To handle the possibility your Messenger bot may not have permission to access a person's name, the [fallbackText] property is required.
+ * This will be used in place of [text] if the person's name cannot be retrieved.
+ */
+data class DynamicText(val text: String,
+                       val fallbackText: String)

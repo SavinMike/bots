@@ -5,16 +5,14 @@ import me.smu.bot.facebook.model.mechanism.WebHookBuilder
 import me.smu.bot.facebook.model.mechanism.Webhook
 import me.smu.bot.facebook.model.network.client.FacebookHttpClient
 import me.smu.bot.facebook.model.network.client.api.ApiProvider
-import me.smu.bot.facebook.model.network.client.controller.ApiControllerProvider
-import me.smu.bot.facebook.model.network.client.controller.AttachmentUploadController
-import me.smu.bot.facebook.model.network.client.controller.ControllerProvider
-import me.smu.bot.facebook.model.network.client.controller.SendController
+import me.smu.bot.facebook.model.network.client.controller.*
 import me.smu.bot.facebook.model.network.webhook.WebhookServer
 
 class FacebookBot internal constructor(private val server: WebhookServer,
                                        controllerProvider: ControllerProvider) :
         SendController by controllerProvider.sendController,
-        AttachmentUploadController by controllerProvider.attachmentUploadController {
+        AttachmentUploadController by controllerProvider.attachmentUploadController,
+        BroadcastController by controllerProvider.broadcastController {
 
     fun startWebHook(wait: Boolean = true) {
         server.start(wait)
