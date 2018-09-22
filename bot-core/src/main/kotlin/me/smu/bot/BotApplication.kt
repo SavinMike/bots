@@ -26,8 +26,8 @@ class BotApplication(private val router: ScreenRouter,
     init {
     }
 
-    fun startPolling() {
-        engine.startPolling(router)
+    fun start(wait: Boolean) {
+        engine.start(wait, router)
     }
 }
 

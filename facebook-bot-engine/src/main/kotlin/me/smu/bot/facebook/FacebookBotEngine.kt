@@ -1,9 +1,8 @@
-package com.smu.bot
+package me.smu.bot.facebook
 
-import me.ivmg.telegram.Bot
-import me.ivmg.telegram.bot
-import me.ivmg.telegram.dispatch
-import me.ivmg.telegram.dispatcher.Dispatcher
+import me.smu.bot.facebook.model.dispatcher.UpdateDispatcher
+import me.smu.bot.facebook.model.mechanism.WebHookBuilder
+import me.smu.bot.facebook.model.mechanism.Webhook
 import me.smu.bot.model.bus.EmptyEventInterceptor
 import me.smu.bot.model.bus.EventBus
 import me.smu.bot.model.bus.EventInterceptor
@@ -15,22 +14,24 @@ import me.smu.bot.model.engine.BotEngineLifecycle
 import me.smu.bot.model.engine.SkipBotEngineLifecycle
 import me.smu.bot.model.router.ScreenRouter
 
-class TelegramBotEngine(private val token: String,
+class FacebookBotEngine(private val webhook: Webhook,
+                        private val accessToken: String,
                         private var botEngineLifecycle: BotEngineLifecycle) : BotEngine {
 
-    lateinit var telegramBot: Bot
+    lateinit var facebookBot: FacebookBot
 
-    var dispatcher: Dispatcher.(router: ScreenRouter) -> Unit = {}
+    var dispatcher: UpdateDispatcher.(router: ScreenRouter) -> Unit = {}
     var eventInterceptor: EventInterceptor = EmptyEventInterceptor
 
     init {
         botEngineLifecycle.init(this)
     }
 
-    override fun startPolling(router: ScreenRouter) {
+    override fun start(wait: Boolean, router: ScreenRouter) {
         botEngineLifecycle.preStartingPolling(this)
-        telegramBot = bot {
-            token = this@TelegramBotEngine.token
+        facebookBot = facebookBot {
+            webhook = this@FacebookBotEngine.webhook
+            accessToken = this@FacebookBotEngine.accessToken
             dispatch {
                 dispatcher(router)
             }
@@ -46,13 +47,13 @@ class TelegramBotEngine(private val token: String,
             }
         }
 
-        telegramBot.startPolling()
+        facebookBot.startWebHook(wait)
     }
 }
 
-fun telegramFactory(init: TelegramBotEngineFactory.() -> Unit): BotEngineFactory<TelegramBotEngine> = TelegramBotEngineFactory().apply(init)
+fun facebook(init: FacebookBotEngineFactory.() -> Unit): BotEngineFactory<FacebookBotEngine> = FacebookBotEngineFactory().apply(init)
 
-fun TelegramBotEngineFactory.setEventInterceptor(eventInterceptor: (ScreenRouter, Event) -> Boolean): BotEngineFactory<TelegramBotEngine> {
+fun FacebookBotEngineFactory.setEventInterceptor(eventInterceptor: (ScreenRouter, Event) -> Boolean): BotEngineFactory<FacebookBotEngine> {
     this.eventInterceptor = object : EventInterceptor {
         override fun intercept(router: ScreenRouter, event: Event): Boolean {
             return eventInterceptor(router, event)
@@ -62,17 +63,18 @@ fun TelegramBotEngineFactory.setEventInterceptor(eventInterceptor: (ScreenRouter
     return this
 }
 
-class TelegramBotEngineFactory : BotEngineFactory<TelegramBotEngine> {
+class FacebookBotEngineFactory : BotEngineFactory<FacebookBotEngine> {
 
-    var dispatcher: Dispatcher.(router: ScreenRouter) -> Unit = {}
-    lateinit var token: String
+    var dispatcher: UpdateDispatcher.(router: ScreenRouter) -> Unit = {}
+    lateinit var accessToken: String
+    lateinit var webHookBuilder: WebHookBuilder
     override var botEngineLifecycle: BotEngineLifecycle = SkipBotEngineLifecycle
     var eventInterceptor: EventInterceptor = EmptyEventInterceptor
 
-    override fun createEngine(): TelegramBotEngine {
-        return TelegramBotEngine(token, botEngineLifecycle).apply {
-            dispatcher = this@TelegramBotEngineFactory.dispatcher
-            eventInterceptor = this@TelegramBotEngineFactory.eventInterceptor
+    override fun createEngine(): FacebookBotEngine {
+        return FacebookBotEngine(webHookBuilder.build(), accessToken, botEngineLifecycle).apply {
+            dispatcher = this@FacebookBotEngineFactory.dispatcher
+            eventInterceptor = this@FacebookBotEngineFactory.eventInterceptor
         }
     }
 }

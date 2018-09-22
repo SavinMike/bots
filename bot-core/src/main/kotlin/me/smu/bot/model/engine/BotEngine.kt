@@ -3,7 +3,7 @@ package me.smu.bot.model.engine
 import me.smu.bot.model.router.ScreenRouter
 
 interface BotEngine {
-    fun startPolling(router: ScreenRouter)
+    fun start(wait: Boolean, router: ScreenRouter)
 }
 
 interface BotEngineLifecycle {
@@ -11,7 +11,7 @@ interface BotEngineLifecycle {
     fun preStartingPolling(botEngine: BotEngine)
 }
 
-object SkipBotEngineLifecycle : BotEngineLifecycle{
+object SkipBotEngineLifecycle : BotEngineLifecycle {
     override fun init(botEngine: BotEngine) {
 
     }

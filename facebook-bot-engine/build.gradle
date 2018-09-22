@@ -1,0 +1,14 @@
+group 'me.smu.bot'
+version '0.1.0'
+
+apply plugin: 'kotlin'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':facebook-api')
+    implementation project(':bot-core')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${core.kotlin}"
+}
