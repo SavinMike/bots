@@ -14,6 +14,6 @@ data class MessagingPostbacksEvent(override val sender: User?,
                                    override val timestamp: Long,
                                    val postback: Postback): WebhookEvent
 
-data class Postback(val title: String,
-                    val payload: String,
-                    val referral: String)
+data class Postback(val title: String? = null,
+                    val payload: String? = null,
+                    val referral: String? = null)
