@@ -3,7 +3,7 @@ package me.smu.bot.facebook.model.network.client.controller
 import me.smu.bot.facebook.model.data.*
 import me.smu.bot.facebook.model.network.client.api.ProfileApi
 import me.smu.bot.facebook.model.network.client.api.data.GetStartedPayload
-import me.smu.bot.facebook.model.network.client.api.data.ProfileUpdateRequest
+import me.smu.bot.facebook.model.network.client.api.data.ProfileInfo
 
 /**
  * The Messenger Profile API allows you to set, update, retrieve, and delete properties from your bot's Messenger Profile.
@@ -71,7 +71,7 @@ interface ProfileController {
      *
      * @see PersistentMenu
      */
-    suspend fun setPersistentMenu(persistentMenu: PersistentMenu)
+    suspend fun setPersistentMenu(persistentMenu: List<PersistentMenu>)
 
     /**
      * The [paymentSettings] property of your bot's Messenger Profile provides the Messenger Platform with several
@@ -114,35 +114,35 @@ interface ProfileController {
 
 internal class ApiProfileController(private val profileApi: ProfileApi) : ProfileController {
     override suspend fun setAccountLinkingUrl(accountLinkingUrl: String) {
-        profileApi.updateProfile(ProfileUpdateRequest(accountLinkingUrl = accountLinkingUrl))
+        profileApi.updateProfile(ProfileInfo(accountLinkingUrl = accountLinkingUrl))
     }
 
     override suspend fun setGetStartedButton(payload: String) {
-        profileApi.updateProfile(ProfileUpdateRequest(getStarted = GetStartedPayload(payload)))
+        profileApi.updateProfile(ProfileInfo(getStarted = GetStartedPayload(payload)))
     }
 
     override suspend fun setGreetingScreen(greeting: List<Greeting>) {
-        profileApi.updateProfile(ProfileUpdateRequest(greeting = greeting))
+        profileApi.updateProfile(ProfileInfo(greeting = greeting))
     }
 
     override suspend fun setHomeUrl(homeUrl: HomeUrl) {
-        profileApi.updateProfile(ProfileUpdateRequest(homeUrl = homeUrl))
+        profileApi.updateProfile(ProfileInfo(homeUrl = homeUrl))
     }
 
-    override suspend fun setPersistentMenu(persistentMenu: PersistentMenu) {
-        profileApi.updateProfile(ProfileUpdateRequest(persistentMenu = persistentMenu))
+    override suspend fun setPersistentMenu(persistentMenu: List<PersistentMenu>) {
+        profileApi.updateProfile(ProfileInfo(persistentMenu = persistentMenu))
     }
 
     override suspend fun setPaymentSettings(paymentSettings: PaymentSettings) {
-        profileApi.updateProfile(ProfileUpdateRequest(paymentSettings = paymentSettings))
+        profileApi.updateProfile(ProfileInfo(paymentSettings = paymentSettings))
     }
 
     override suspend fun setTargetAudience(targetAudience: TargetAudience) {
-        profileApi.updateProfile(ProfileUpdateRequest(targetAudience = targetAudience))
+        profileApi.updateProfile(ProfileInfo(targetAudience = targetAudience))
     }
 
     override suspend fun setWhitelistedDomains(domains: List<String>) {
-        profileApi.updateProfile(ProfileUpdateRequest(whitelistedDomains = domains))
+        profileApi.updateProfile(ProfileInfo(whitelistedDomains = domains))
     }
 
 }
