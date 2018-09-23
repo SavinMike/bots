@@ -67,12 +67,12 @@ class FacebookBotEngineFactory : BotEngineFactory<FacebookBotEngine> {
 
     var dispatcher: UpdateDispatcher.(router: ScreenRouter) -> Unit = {}
     lateinit var accessToken: String
-    lateinit var webHookBuilder: WebHookBuilder
+    lateinit var webHookBuilder: WebHookBuilder.() -> Unit
     override var botEngineLifecycle: BotEngineLifecycle = SkipBotEngineLifecycle
     var eventInterceptor: EventInterceptor = EmptyEventInterceptor
 
     override fun createEngine(): FacebookBotEngine {
-        return FacebookBotEngine(webHookBuilder.build(), accessToken, botEngineLifecycle).apply {
+        return FacebookBotEngine(WebHookBuilder().apply(webHookBuilder).build(), accessToken, botEngineLifecycle).apply {
             dispatcher = this@FacebookBotEngineFactory.dispatcher
             eventInterceptor = this@FacebookBotEngineFactory.eventInterceptor
         }
