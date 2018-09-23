@@ -7,4 +7,5 @@ internal class ApiProvider(facebookHttpService: FacebookHttpClient) {
     val sendApi: SendApi by lazy { SendApi(facebookHttpService) }
     val attachmentUploadApi: AttachmentUploadApi by lazy { AttachmentUploadApi(facebookHttpService, Gson()) }
     val broadcastApi: BroadcastApi by lazy { BroadcastApi(facebookHttpService) }
+    val profileApi: ProfileApi by lazy { ProfileApi(facebookHttpService) }
 }

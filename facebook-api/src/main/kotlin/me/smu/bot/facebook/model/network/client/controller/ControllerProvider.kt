@@ -6,6 +6,7 @@ interface ControllerProvider {
     val sendController: SendController
     val attachmentUploadController: AttachmentUploadController
     val broadcastController: BroadcastController
+    val profileController: ProfileController
 }
 
 internal class ApiControllerProvider(apiProvider: ApiProvider) : ControllerProvider {
@@ -14,4 +15,6 @@ internal class ApiControllerProvider(apiProvider: ApiProvider) : ControllerProvi
     override val sendController: SendController by lazy { ApiSendController(apiProvider.sendApi) }
 
     override val broadcastController: BroadcastController by lazy { ClientBroadcastController(apiProvider.broadcastApi) }
+
+    override val profileController: ProfileController by lazy { ApiProfileController(apiProvider.profileApi) }
 }

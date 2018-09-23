@@ -12,7 +12,8 @@ class FacebookBot internal constructor(private val server: WebhookServer,
                                        controllerProvider: ControllerProvider) :
         SendController by controllerProvider.sendController,
         AttachmentUploadController by controllerProvider.attachmentUploadController,
-        BroadcastController by controllerProvider.broadcastController {
+        BroadcastController by controllerProvider.broadcastController,
+        ProfileController by controllerProvider.profileController {
 
     fun startWebHook(wait: Boolean = true) {
         server.start(wait)
