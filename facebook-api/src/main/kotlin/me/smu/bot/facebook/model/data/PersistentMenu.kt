@@ -13,8 +13,8 @@ package me.smu.bot.facebook.model.data
  */
 data class PersistentMenu(val locale: String,
                           val composerInputDisabled: Boolean = false,
-                          val disabledSurfaces: List<Surface>,
-                          val callToActions: List<MenuItem>)
+                          val disabledSurfaces: List<Surface>? = null,
+                          val callToActions: List<MenuItem>? = null)
 
 enum class Surface {
     customer_chat_plugin
