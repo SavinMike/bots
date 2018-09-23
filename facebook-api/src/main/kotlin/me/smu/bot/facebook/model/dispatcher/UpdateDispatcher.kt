@@ -7,6 +7,7 @@ import me.smu.bot.facebook.model.MessageHandle
 import me.smu.bot.facebook.model.dispatcher.handlers.Handler
 import me.smu.bot.facebook.model.dispatcher.handlers.MessageHandler
 import me.smu.bot.facebook.model.dispatcher.handlers.OtherwiseHandler
+import me.smu.bot.facebook.model.dispatcher.handlers.PayloadHandlerBuilder
 import me.smu.bot.facebook.model.mapper.mapToBotException
 import me.smu.bot.facebook.model.network.webhook.event.WebhookEvent
 import me.smu.bot.model.exception.BotException
@@ -19,6 +20,10 @@ fun UpdateDispatcher.default(body: Handle) {
 
 fun UpdateDispatcher.message(body: MessageHandle) {
     addHandler(MessageHandler(body))
+}
+
+fun UpdateDispatcher.payload(body: PayloadHandlerBuilder.() -> Unit) {
+    addHandler(PayloadHandlerBuilder().apply(body).build())
 }
 
 class UpdateDispatcher {
