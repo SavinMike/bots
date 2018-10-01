@@ -3,9 +3,8 @@ package me.smu.bot.facebook.model.dispatcher
 import me.smu.bot.facebook.FacebookBot
 import me.smu.bot.facebook.model.Handle
 import me.smu.bot.facebook.model.HandleError
-import me.smu.bot.facebook.model.MessageHandle
 import me.smu.bot.facebook.model.dispatcher.handlers.Handler
-import me.smu.bot.facebook.model.dispatcher.handlers.MessageHandler
+import me.smu.bot.facebook.model.dispatcher.handlers.MessageHandlerBuilder
 import me.smu.bot.facebook.model.dispatcher.handlers.OtherwiseHandler
 import me.smu.bot.facebook.model.dispatcher.handlers.PayloadHandlerBuilder
 import me.smu.bot.facebook.model.mapper.mapToBotException
@@ -18,11 +17,11 @@ fun UpdateDispatcher.default(body: Handle) {
     addHandler(OtherwiseHandler(body))
 }
 
-fun UpdateDispatcher.message(body: MessageHandle) {
-    addHandler(MessageHandler(body))
+fun UpdateDispatcher.message(body: MessageHandlerBuilder.() -> Unit) {
+    addHandler(MessageHandlerBuilder().apply(body).build())
 }
 
-fun UpdateDispatcher.payload(body: PayloadHandlerBuilder.() -> Unit) {
+fun UpdateDispatcher.payloadEvent(body: PayloadHandlerBuilder.() -> Unit) {
     addHandler(PayloadHandlerBuilder().apply(body).build())
 }
 

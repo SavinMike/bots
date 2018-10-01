@@ -9,10 +9,17 @@ import java.io.File
  * or [AttachmentType.template]. For assets, max file size is 25MB.
  *
  * @property type: audio, fallback, file, image, location or video
+ * @property title: title of the attachment
  * @property payload: multimedia or location payload
  */
-data class Attachment(val type: AttachmentType,
-                      val payload: Payload)
+open class Attachment(val type: AttachmentType,
+                      val title: String? = null,
+                      val url: String? = null,
+                      val payload: Payload? = null)
+
+class TemplateAttachment(payload: TemplatePayload) : Attachment(
+        type = AttachmentType.template,
+        payload = payload)
 
 enum class AttachmentType {
     audio, fallback, file, image, location, video, template
@@ -25,7 +32,8 @@ sealed class Payload
  *
  * @property url: URL of the file
  */
-data class FilePayload(val url: String) : Payload()
+data class FilePayload(val url: String? = null,
+                       val attachmentId: String? = null) : Payload()
 
 /**
  * location payload
@@ -56,9 +64,9 @@ enum class TemplateType {
  * @property url: URL to the attachment
  * @property type: fallback
  */
-data class Fallback(
+data class FallbackPayload(
         val title: String,
         val url: String,
-        val type: AttachmentType)
+        val type: AttachmentType) : Payload()
 
 

@@ -28,13 +28,13 @@ internal class ApiAttachmentUploadController(private val attachmentUploadApi: At
 
     override suspend fun uploadFromUrl(url: String, type: AttachmentType, reusable: Boolean): AttachmentUploadResponse {
         return attachmentUploadApi.messageAttachments(
-                AttachmentUploadRequest(AttachmentData(Attachment(type, UploadPayload(reusable, url = url))))
+                AttachmentUploadRequest(AttachmentData(Attachment(type, payload = UploadPayload(reusable, url = url))))
         )
     }
 
     override suspend fun uploadFromFile(file: File, type: AttachmentType, reusable: Boolean): AttachmentUploadResponse {
         return attachmentUploadApi.messageAttachments(
-                AttachmentUploadRequest(AttachmentData(Attachment(type, UploadPayload(reusable, file = file))))
+                AttachmentUploadRequest(AttachmentData(Attachment(type, payload = UploadPayload(reusable, file = file))))
         )
     }
 }

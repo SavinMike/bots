@@ -138,15 +138,15 @@ data class PostbackButton(
  * The [ShareButton] enables people to share your content in Messenger. Messages shared this way show an attribution
  * to your bot that recipients can tap to learn more about your bot.
  *
- * [shareContent] only supports the following:
+ * [shareContents] only supports the following:
  * + Template used must be generic template.
  * + Maximum of one URL button on the template. If no buttons are specified, the buttons property on the generic template
  * must be set to an empty array.
  *
- * @property shareContent: The message that you wish the recipient of the share to see, if it is different from the one
+ * @property shareContents: The message that you wish the recipient of the share to see, if it is different from the one
  * this button is attached to. The format follows that used in Send API.
  */
-data class ShareButton(val shareContent: SendingMessage? = null) : Button {
+data class ShareButton(val shareContents: SendingMessage? = null) : Button {
     override val type: ButtonType = ButtonType.element_share
     override val title: String? = null
 }

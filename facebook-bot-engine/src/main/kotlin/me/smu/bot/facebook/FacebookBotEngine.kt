@@ -20,24 +20,32 @@ class FacebookBotEngine(private val webhook: Webhook,
 
     lateinit var facebookBot: FacebookBot
 
-    var dispatcher: UpdateDispatcher.(router: ScreenRouter) -> Unit = {}
+    var dispatcher: UpdateDispatcher.() -> Unit = {}
+    var screenDispatcher: UpdateDispatcher.(router: ScreenRouter) -> Unit = {}
     var eventInterceptor: EventInterceptor = EmptyEventInterceptor
 
     init {
         botEngineLifecycle.init(this)
     }
 
-    override fun start(wait: Boolean, router: ScreenRouter) {
+    override fun start(wait: Boolean, router: ScreenRouter?) {
         botEngineLifecycle.preStartingPolling(this)
         facebookBot = facebookBot {
             webhook = this@FacebookBotEngine.webhook
             accessToken = this@FacebookBotEngine.accessToken
             dispatch {
-                dispatcher(router)
+                router?.let {
+                    screenDispatcher(router)
+                } ?: dispatcher()
             }
         }
 
+        botEngineLifecycle.botReady(this)
         EventBus.addEventEmitter { event ->
+            if (router == null) {
+                return@addEventEmitter
+            }
+
             if (eventInterceptor.intercept(router, event)) {
                 return@addEventEmitter
             }
@@ -65,7 +73,8 @@ fun FacebookBotEngineFactory.setEventInterceptor(eventInterceptor: (ScreenRouter
 
 class FacebookBotEngineFactory : BotEngineFactory<FacebookBotEngine> {
 
-    var dispatcher: UpdateDispatcher.(router: ScreenRouter) -> Unit = {}
+    var dispatcher: UpdateDispatcher.() -> Unit = {}
+    var screenDispatcher: UpdateDispatcher.(router: ScreenRouter) -> Unit = {}
     lateinit var accessToken: String
     lateinit var webHookBuilder: WebHookBuilder.() -> Unit
     override var botEngineLifecycle: BotEngineLifecycle = SkipBotEngineLifecycle
@@ -74,6 +83,7 @@ class FacebookBotEngineFactory : BotEngineFactory<FacebookBotEngine> {
     override fun createEngine(): FacebookBotEngine {
         return FacebookBotEngine(WebHookBuilder().apply(webHookBuilder).build(), accessToken, botEngineLifecycle).apply {
             dispatcher = this@FacebookBotEngineFactory.dispatcher
+            screenDispatcher = this@FacebookBotEngineFactory.screenDispatcher
             eventInterceptor = this@FacebookBotEngineFactory.eventInterceptor
         }
     }

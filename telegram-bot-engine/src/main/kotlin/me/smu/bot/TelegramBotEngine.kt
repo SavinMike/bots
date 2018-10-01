@@ -20,23 +20,30 @@ class TelegramBotEngine(private val token: String,
 
     lateinit var telegramBot: Bot
 
-    var dispatcher: Dispatcher.(router: ScreenRouter) -> Unit = {}
+    var dispatcher: Dispatcher.() -> Unit = {}
+    var screenDispatcher: Dispatcher.(router: ScreenRouter) -> Unit = {}
     var eventInterceptor: EventInterceptor = EmptyEventInterceptor
 
     init {
         botEngineLifecycle.init(this)
     }
 
-    override fun start(wait: Boolean, router: ScreenRouter) {
+    override fun start(wait: Boolean, router: ScreenRouter?) {
         botEngineLifecycle.preStartingPolling(this)
         telegramBot = bot {
             token = this@TelegramBotEngine.token
             dispatch {
-                dispatcher(router)
+                router?.let {
+                    screenDispatcher(router)
+                } ?: dispatcher()
             }
         }
 
         EventBus.addEventEmitter { event ->
+            if (router == null) {
+                return@addEventEmitter
+            }
+
             if (eventInterceptor.intercept(router, event)) {
                 return@addEventEmitter
             }
@@ -71,7 +78,7 @@ class TelegramBotEngineFactory : BotEngineFactory<TelegramBotEngine> {
 
     override fun createEngine(): TelegramBotEngine {
         return TelegramBotEngine(token, botEngineLifecycle).apply {
-            dispatcher = this@TelegramBotEngineFactory.dispatcher
+            screenDispatcher = this@TelegramBotEngineFactory.dispatcher
             eventInterceptor = this@TelegramBotEngineFactory.eventInterceptor
         }
     }

@@ -14,9 +14,11 @@ import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
+import me.smu.bot.facebook.model.data.Attachment
 import me.smu.bot.facebook.model.dispatcher.UpdateDispatcher
 import me.smu.bot.facebook.model.exception.ApiException
 import me.smu.bot.facebook.model.mechanism.Webhook
+import me.smu.bot.facebook.model.network.webhook.gson.AttachmentTypeAdapter
 import me.smu.bot.facebook.model.network.webhook.gson.PageEntityTypeAdapter
 import me.smu.bot.facebook.model.network.webhook.gson.ServerRequestTypeAdapter
 import me.smu.bot.model.logger.DefaultLogger
@@ -40,6 +42,7 @@ internal class WebhookServer(webhook: Webhook,
                     setFieldNamingStrategy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                     registerTypeAdapter(MessagingEntry::class.java, PageEntityTypeAdapter)
                     registerTypeAdapter(WebhookRequest::class.java, ServerRequestTypeAdapter)
+                    registerTypeAdapter(Attachment::class.java, AttachmentTypeAdapter)
                 }
             }
             routing {

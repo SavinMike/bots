@@ -85,7 +85,7 @@ enum class ElementStyle {
  */
 data class MediaTemplate(
         val elements: List<MediaElement>,
-        override val sharable: Boolean?
+        override val sharable: Boolean? = null
 ) : TemplatePayload(TemplateType.media)
 
 //TODO add Open Graph, Receipt and Airplain Templates
