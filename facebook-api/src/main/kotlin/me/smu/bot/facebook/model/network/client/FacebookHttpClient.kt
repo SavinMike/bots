@@ -53,12 +53,16 @@ internal class FacebookHttpClient(val accessToken: String) {
             }
 
             if (response is ErrorResponse) {
-                println("Failed Request: ${response}")
+                println("Failed Request: $response")
                 throw ApiException(response.error)
             }
 
+            println("Success Request: $response")
+
             return response
         } catch (e: Exception) {
+            println("Exception caught")
+            e.printStackTrace()
             throw ApiException()
         }
     }

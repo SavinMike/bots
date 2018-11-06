@@ -1,12 +1,7 @@
 package me.ivmg.telegram
 
 import me.ivmg.telegram.dispatcher.Dispatcher
-import me.ivmg.telegram.entities.ChatAction
-import me.ivmg.telegram.entities.InlineKeyboardMarkup
-import me.ivmg.telegram.entities.InputMedia
-import me.ivmg.telegram.entities.ParseMode
-import me.ivmg.telegram.entities.ReplyMarkup
-import me.ivmg.telegram.entities.Update
+import me.ivmg.telegram.entities.*
 import me.ivmg.telegram.entities.payment.PaymentInvoiceInfo
 import me.ivmg.telegram.entities.payment.ShippingOption
 import me.ivmg.telegram.errors.RetrieveUpdatesError
@@ -15,7 +10,7 @@ import me.ivmg.telegram.network.ApiClient
 import me.ivmg.telegram.network.call
 import me.ivmg.telegram.types.DispatchableObject
 import okhttp3.logging.HttpLoggingInterceptor
-import java.util.Date
+import java.util.*
 import java.io.File as SystemFile
 
 fun bot(body: Bot.Builder.() -> Unit) = Bot.Builder().build(body)
@@ -26,11 +21,11 @@ fun Bot.Builder.dispatch(body: Dispatcher.() -> Unit): Dispatcher {
 }
 
 class Bot private constructor(
-    private val updater: Updater,
-    token: String,
-    apiUrl: String,
-    timeout: Int = 30,
-    logLevel: HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.BODY
+        private val updater: Updater,
+        token: String,
+        apiUrl: String,
+        timeout: Int = 30,
+        logLevel: HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.BODY
 ) {
     private val apiClient: ApiClient = ApiClient(token, apiUrl, timeout, logLevel)
 
@@ -93,419 +88,421 @@ class Bot private constructor(
     fun getMe() = apiClient.getMe().call()
 
     fun sendMessage(
-        chatId: Long,
-        text: String,
-        parseMode: ParseMode? = null,
-        disableWebPagePreview: Boolean? = null,
-        disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null,
-        replyMarkup: ReplyMarkup? = null
+            chatId: Long,
+            text: String,
+            parseMode: ParseMode? = null,
+            disableWebPagePreview: Boolean? = null,
+            disableNotification: Boolean? = null,
+            replyToMessageId: Long? = null,
+            replyMarkup: ReplyMarkup? = null
     ) = apiClient.sendMessage(
-        chatId,
-        text,
-        parseMode?.modeName,
-        disableWebPagePreview,
-        disableNotification,
-        replyToMessageId,
-        replyMarkup
+            chatId,
+            text,
+            parseMode?.modeName,
+            disableWebPagePreview,
+            disableNotification,
+            replyToMessageId,
+            replyMarkup
     ).call()
 
     fun forwardMessage(
-        chatId: Long,
-        fromChatId: Long,
-        messageId: Long,
-        disableNotification: Boolean? = null
+            chatId: Long,
+            fromChatId: Long,
+            messageId: Long,
+            disableNotification: Boolean? = null
     ) = apiClient.forwardMessage(
-        chatId,
-        fromChatId,
-        messageId,
-        disableNotification
+            chatId,
+            fromChatId,
+            messageId,
+            disableNotification
     ).call()
 
     fun sendPhoto(
-        chatId: Long,
-        photo: SystemFile,
-        caption: String? = null,
-        disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null
+            chatId: Long,
+            photo: SystemFile,
+            caption: String? = null,
+            disableNotification: Boolean? = null,
+            replyToMessageId: Long? = null,
+            mimeType: String? = null
     ) = apiClient.sendPhoto(
-        chatId,
-        photo,
-        caption,
-        disableNotification,
-        replyToMessageId
+            chatId,
+            photo,
+            caption,
+            disableNotification,
+            replyToMessageId,
+            mimeType
     ).call()
 
     fun sendPhoto(
-        chatId: Long,
-        photo: String,
-        caption: String? = null,
-        disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null
+            chatId: Long,
+            photo: String,
+            caption: String? = null,
+            disableNotification: Boolean? = null,
+            replyToMessageId: Long? = null
     ) = apiClient.sendPhoto(
-        chatId,
-        photo,
-        caption,
-        disableNotification,
-        replyToMessageId
+            chatId,
+            photo,
+            caption,
+            disableNotification,
+            replyToMessageId
     ).call()
 
     fun sendAudio(
-        chatId: Long,
-        photo: String,
-        caption: String? = null,
-        disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null
+            chatId: Long,
+            photo: String,
+            caption: String? = null,
+            disableNotification: Boolean? = null,
+            replyToMessageId: Long? = null
     ) = apiClient.sendPhoto(
-        chatId,
-        photo,
-        caption,
-        disableNotification,
-        replyToMessageId
+            chatId,
+            photo,
+            caption,
+            disableNotification,
+            replyToMessageId
     ).call()
 
     fun sendAudio(
-        chatId: Long,
-        audio: SystemFile,
-        duration: Int? = null,
-        performer: String? = null,
-        title: String? = null,
-        disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null,
-        replyMarkup: ReplyMarkup? = null
+            chatId: Long,
+            audio: SystemFile,
+            duration: Int? = null,
+            performer: String? = null,
+            title: String? = null,
+            disableNotification: Boolean? = null,
+            replyToMessageId: Long? = null,
+            replyMarkup: ReplyMarkup? = null
     ) = apiClient.sendAudio(
-        chatId,
-        audio,
-        duration,
-        performer,
-        title,
-        disableNotification,
-        replyToMessageId,
-        replyMarkup
+            chatId,
+            audio,
+            duration,
+            performer,
+            title,
+            disableNotification,
+            replyToMessageId,
+            replyMarkup
     ).call()
 
     fun sendAudio(
-        chatId: Long,
-        audio: String,
-        duration: Int? = null,
-        performer: String? = null,
-        title: String? = null,
-        disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null,
-        replyMarkup: ReplyMarkup? = null
+            chatId: Long,
+            audio: String,
+            duration: Int? = null,
+            performer: String? = null,
+            title: String? = null,
+            disableNotification: Boolean? = null,
+            replyToMessageId: Long? = null,
+            replyMarkup: ReplyMarkup? = null
     ) = apiClient.sendAudio(
-        chatId,
-        audio,
-        duration,
-        performer,
-        title,
-        disableNotification,
-        replyToMessageId,
-        replyMarkup
+            chatId,
+            audio,
+            duration,
+            performer,
+            title,
+            disableNotification,
+            replyToMessageId,
+            replyMarkup
     ).call()
 
     fun sendDocument(
-        chatId: Long,
-        document: SystemFile,
-        caption: String? = null,
-        disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null,
-        replyMarkup: ReplyMarkup? = null
+            chatId: Long,
+            document: SystemFile,
+            caption: String? = null,
+            disableNotification: Boolean? = null,
+            replyToMessageId: Long? = null,
+            replyMarkup: ReplyMarkup? = null
     ) = apiClient.sendDocument(
-        chatId,
-        document,
-        caption,
-        disableNotification,
-        replyToMessageId,
-        replyMarkup
+            chatId,
+            document,
+            caption,
+            disableNotification,
+            replyToMessageId,
+            replyMarkup
     ).call()
 
     fun sendDocument(
-        chatId: Long,
-        fileId: String,
-        caption: String? = null,
-        disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null,
-        replyMarkup: ReplyMarkup? = null
+            chatId: Long,
+            fileId: String,
+            caption: String? = null,
+            disableNotification: Boolean? = null,
+            replyToMessageId: Long? = null,
+            replyMarkup: ReplyMarkup? = null
     ) = apiClient.sendDocument(
-        chatId,
-        fileId,
-        caption,
-        disableNotification,
-        replyToMessageId,
-        replyMarkup
+            chatId,
+            fileId,
+            caption,
+            disableNotification,
+            replyToMessageId,
+            replyMarkup
     ).call()
 
     fun sendVideo(
-        chatId: Long,
-        video: SystemFile,
-        duration: Int? = null,
-        width: Int? = null,
-        height: Int? = null,
-        caption: String? = null,
-        disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null,
-        replyMarkup: ReplyMarkup? = null
+            chatId: Long,
+            video: SystemFile,
+            duration: Int? = null,
+            width: Int? = null,
+            height: Int? = null,
+            caption: String? = null,
+            disableNotification: Boolean? = null,
+            replyToMessageId: Long? = null,
+            replyMarkup: ReplyMarkup? = null
     ) = apiClient.sendVideo(
-        chatId,
-        video,
-        duration,
-        width,
-        height,
-        caption,
-        disableNotification,
-        replyToMessageId,
-        replyMarkup
+            chatId,
+            video,
+            duration,
+            width,
+            height,
+            caption,
+            disableNotification,
+            replyToMessageId,
+            replyMarkup
     ).call()
 
     fun sendVideo(
-        chatId: Long,
-        fileId: String,
-        duration: Int? = null,
-        width: Int? = null,
-        height: Int? = null,
-        caption: String? = null,
-        disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null,
-        replyMarkup: ReplyMarkup? = null
+            chatId: Long,
+            fileId: String,
+            duration: Int? = null,
+            width: Int? = null,
+            height: Int? = null,
+            caption: String? = null,
+            disableNotification: Boolean? = null,
+            replyToMessageId: Long? = null,
+            replyMarkup: ReplyMarkup? = null
     ) = apiClient.sendVideo(
-        chatId,
-        fileId,
-        duration,
-        width,
-        height,
-        caption,
-        disableNotification,
-        replyToMessageId,
-        replyMarkup
+            chatId,
+            fileId,
+            duration,
+            width,
+            height,
+            caption,
+            disableNotification,
+            replyToMessageId,
+            replyMarkup
     ).call()
 
     fun sendVoice(
-        chatId: Long,
-        audio: SystemFile,
-        duration: Int? = null,
-        disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null,
-        replyMarkup: ReplyMarkup? = null
+            chatId: Long,
+            audio: SystemFile,
+            duration: Int? = null,
+            disableNotification: Boolean? = null,
+            replyToMessageId: Long? = null,
+            replyMarkup: ReplyMarkup? = null
     ) = apiClient.sendVoice(
-        chatId,
-        audio,
-        duration,
-        disableNotification,
-        replyToMessageId,
-        replyMarkup
+            chatId,
+            audio,
+            duration,
+            disableNotification,
+            replyToMessageId,
+            replyMarkup
     ).call()
 
     fun sendVoice(
-        chatId: Long,
-        audioId: String,
-        duration: Int? = null,
-        disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null,
-        replyMarkup: ReplyMarkup? = null
+            chatId: Long,
+            audioId: String,
+            duration: Int? = null,
+            disableNotification: Boolean? = null,
+            replyToMessageId: Long? = null,
+            replyMarkup: ReplyMarkup? = null
     ) = apiClient.sendVoice(
-        chatId,
-        audioId,
-        duration,
-        disableNotification,
-        replyToMessageId,
-        replyMarkup
+            chatId,
+            audioId,
+            duration,
+            disableNotification,
+            replyToMessageId,
+            replyMarkup
     ).call()
 
     fun sendVideoNote(
-        chatId: Long,
-        audio: SystemFile,
-        duration: Int? = null,
-        length: Int? = null,
-        disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null,
-        replyMarkup: ReplyMarkup? = null
+            chatId: Long,
+            audio: SystemFile,
+            duration: Int? = null,
+            length: Int? = null,
+            disableNotification: Boolean? = null,
+            replyToMessageId: Long? = null,
+            replyMarkup: ReplyMarkup? = null
     ) = apiClient.sendVideoNote(
-        chatId,
-        audio,
-        duration,
-        length,
-        disableNotification,
-        replyToMessageId,
-        replyMarkup
+            chatId,
+            audio,
+            duration,
+            length,
+            disableNotification,
+            replyToMessageId,
+            replyMarkup
     ).call()
 
     fun sendVideoNote(
-        chatId: Long,
-        videoNoteId: String,
-        duration: Int? = null,
-        length: Int? = null,
-        disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null,
-        replyMarkup: ReplyMarkup? = null
+            chatId: Long,
+            videoNoteId: String,
+            duration: Int? = null,
+            length: Int? = null,
+            disableNotification: Boolean? = null,
+            replyToMessageId: Long? = null,
+            replyMarkup: ReplyMarkup? = null
     ) = apiClient.sendVideoNote(
-        chatId,
-        videoNoteId,
-        duration,
-        length,
-        disableNotification,
-        replyToMessageId,
-        replyMarkup
+            chatId,
+            videoNoteId,
+            duration,
+            length,
+            disableNotification,
+            replyToMessageId,
+            replyMarkup
     ).call()
 
     fun sendMediaGroup(
-        chatId: Long,
-        media: List<InputMedia>,
-        disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null
+            chatId: Long,
+            media: List<InputMedia>,
+            disableNotification: Boolean? = null,
+            replyToMessageId: Long? = null
     ) = apiClient.sendMediaGroup(
-        chatId,
-        media,
-        disableNotification,
-        replyToMessageId
+            chatId,
+            media,
+            disableNotification,
+            replyToMessageId
     ).call()
 
     fun sendLocation(
-        chatId: Long,
-        latitude: Float,
-        longitude: Float,
-        livePeriod: Int? = null,
-        disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null,
-        replyMarkup: ReplyMarkup? = null
+            chatId: Long,
+            latitude: Float,
+            longitude: Float,
+            livePeriod: Int? = null,
+            disableNotification: Boolean? = null,
+            replyToMessageId: Long? = null,
+            replyMarkup: ReplyMarkup? = null
     ) = apiClient.sendLocation(
-        chatId,
-        latitude,
-        longitude,
-        livePeriod,
-        disableNotification,
-        replyToMessageId,
-        replyMarkup
+            chatId,
+            latitude,
+            longitude,
+            livePeriod,
+            disableNotification,
+            replyToMessageId,
+            replyMarkup
     ).call()
 
     fun editMessageLiveLocation(
-        chatId: Long? = null,
-        messageId: Long? = null,
-        inlineMessageId: String? = null,
-        latitude: Float,
-        longitude: Float,
-        replyMarkup: ReplyMarkup? = null
+            chatId: Long? = null,
+            messageId: Long? = null,
+            inlineMessageId: String? = null,
+            latitude: Float,
+            longitude: Float,
+            replyMarkup: ReplyMarkup? = null
     ) = apiClient.editMessageLiveLocation(
-        chatId,
-        messageId,
-        inlineMessageId,
-        latitude,
-        longitude,
-        replyMarkup
+            chatId,
+            messageId,
+            inlineMessageId,
+            latitude,
+            longitude,
+            replyMarkup
     ).call()
 
     fun stopMessageLiveLocation(
-        chatId: Long?,
-        messageId: Long? = null,
-        inlineMessageId: String? = null,
-        replyMarkup: ReplyMarkup? = null
+            chatId: Long?,
+            messageId: Long? = null,
+            inlineMessageId: String? = null,
+            replyMarkup: ReplyMarkup? = null
     ) = apiClient.stopMessageLiveLocation(
-        chatId,
-        messageId,
-        inlineMessageId,
-        replyMarkup
+            chatId,
+            messageId,
+            inlineMessageId,
+            replyMarkup
     ).call()
 
     fun sendVenue(
-        chatId: Long,
-        latitude: Float,
-        longitude: Float,
-        title: String,
-        address: String,
-        foursquareId: String? = null,
-        disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null,
-        replyMarkup: ReplyMarkup? = null
+            chatId: Long,
+            latitude: Float,
+            longitude: Float,
+            title: String,
+            address: String,
+            foursquareId: String? = null,
+            disableNotification: Boolean? = null,
+            replyToMessageId: Long? = null,
+            replyMarkup: ReplyMarkup? = null
     ) = apiClient.sendVenue(
-        chatId,
-        latitude,
-        longitude,
-        title,
-        address,
-        foursquareId,
-        disableNotification,
-        replyToMessageId,
-        replyMarkup
+            chatId,
+            latitude,
+            longitude,
+            title,
+            address,
+            foursquareId,
+            disableNotification,
+            replyToMessageId,
+            replyMarkup
     ).call()
 
     fun sendContact(
-        chatId: Long,
-        phoneNumber: String,
-        firstName: String,
-        lastName: String? = null,
-        disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null,
-        replyMarkup: ReplyMarkup? = null
+            chatId: Long,
+            phoneNumber: String,
+            firstName: String,
+            lastName: String? = null,
+            disableNotification: Boolean? = null,
+            replyToMessageId: Long? = null,
+            replyMarkup: ReplyMarkup? = null
     ) = apiClient.sendContact(
-        chatId,
-        phoneNumber,
-        firstName,
-        lastName,
-        disableNotification,
-        replyToMessageId,
-        replyMarkup
+            chatId,
+            phoneNumber,
+            firstName,
+            lastName,
+            disableNotification,
+            replyToMessageId,
+            replyMarkup
     ).call()
 
     fun sendChatAction(chatId: Long, action: ChatAction) =
-        apiClient.sendChatAction(chatId, action).call()
+            apiClient.sendChatAction(chatId, action).call()
 
     fun getUserProfilePhotos(userId: Long, offset: Long? = null, limit: Int? = null) =
-        apiClient.getUserProfilePhotos(userId, offset, limit).call()
+            apiClient.getUserProfilePhotos(userId, offset, limit).call()
 
     fun getFile(fileId: String) = apiClient.getFile(fileId).call()
 
     fun kickChatMember(chatId: Long, userId: Long, untilDate: Date) =
-        apiClient.kickChatMember(chatId, userId, untilDate).call()
+            apiClient.kickChatMember(chatId, userId, untilDate).call()
 
     fun unbanChatMember(chatId: Long, userId: Long) = apiClient.unbanChatMember(chatId, userId).call()
 
     fun restrictChatMember(
-        chatId: Long,
-        userId: Long,
-        untilDate: Date? = null,
-        canSendMessages: Boolean? = null,
-        canSendMediaMessages: Boolean? = null,
-        canSendOtherMessages: Boolean? = null,
-        canAddWebPagePreviews: Boolean? = null
+            chatId: Long,
+            userId: Long,
+            untilDate: Date? = null,
+            canSendMessages: Boolean? = null,
+            canSendMediaMessages: Boolean? = null,
+            canSendOtherMessages: Boolean? = null,
+            canAddWebPagePreviews: Boolean? = null
     ) = apiClient.restrictChatMember(
-        chatId,
-        userId,
-        untilDate,
-        canSendMessages,
-        canSendMediaMessages,
-        canSendOtherMessages,
-        canAddWebPagePreviews
+            chatId,
+            userId,
+            untilDate,
+            canSendMessages,
+            canSendMediaMessages,
+            canSendOtherMessages,
+            canAddWebPagePreviews
     ).call()
 
     fun promoteChatMember(
-        chatId: Long,
-        userId: Long,
-        canChangeInfo: Boolean? = null,
-        canPostMessages: Boolean? = null,
-        canEditMessages: Boolean? = null,
-        canDeleteMessages: Boolean? = null,
-        canInviteUsers: Boolean? = null,
-        canRestrictMembers: Boolean? = null,
-        canPinMessages: Boolean? = null,
-        canPromoteMembers: Boolean? = null
+            chatId: Long,
+            userId: Long,
+            canChangeInfo: Boolean? = null,
+            canPostMessages: Boolean? = null,
+            canEditMessages: Boolean? = null,
+            canDeleteMessages: Boolean? = null,
+            canInviteUsers: Boolean? = null,
+            canRestrictMembers: Boolean? = null,
+            canPinMessages: Boolean? = null,
+            canPromoteMembers: Boolean? = null
     ) = apiClient.promoteChatMember(
-        chatId,
-        userId,
-        canChangeInfo,
-        canPostMessages,
-        canEditMessages,
-        canDeleteMessages,
-        canInviteUsers,
-        canRestrictMembers,
-        canPinMessages,
-        canPromoteMembers
+            chatId,
+            userId,
+            canChangeInfo,
+            canPostMessages,
+            canEditMessages,
+            canDeleteMessages,
+            canInviteUsers,
+            canRestrictMembers,
+            canPinMessages,
+            canPromoteMembers
     ).call()
 
     fun exportChatInviteLink(chatId: Long) = apiClient.exportChatInviteLink(chatId).call()
 
     fun setChatPhoto(
-        chatId: Long,
-        photo: SystemFile
+            chatId: Long,
+            photo: SystemFile
     ) {
 
         // TODO
@@ -518,10 +515,10 @@ class Bot private constructor(
     fun setChatTitle(chatId: Long, title: String) = apiClient.setChatTitle(chatId, title).call()
 
     fun setChatDescription(chatId: Long, description: String) =
-        apiClient.setChatDescription(chatId, description).call()
+            apiClient.setChatDescription(chatId, description).call()
 
     fun pinChatMessage(chatId: Long, messageId: Long, disableNotification: Boolean? = null) =
-        apiClient.pinChatMessage(chatId, messageId, disableNotification).call()
+            apiClient.pinChatMessage(chatId, messageId, disableNotification).call()
 
     fun unpinChatMessage(chatId: Long) = apiClient.unpinChatMessage(chatId).call()
 
@@ -536,22 +533,22 @@ class Bot private constructor(
     fun getChatMember(chatId: Long, userId: Long) = apiClient.getChatMember(chatId, userId).call()
 
     fun setChatStickerSet(chatId: Long, stickerSetName: String) =
-        apiClient.setChatStickerSet(chatId, stickerSetName).call()
+            apiClient.setChatStickerSet(chatId, stickerSetName).call()
 
     fun deleteChatStickerSet(chatId: Long) = apiClient.deleteChatStickerSet(chatId).call()
 
     fun answerCallbackQuery(
-        callbackQueryId: String,
-        text: String? = null,
-        showAlert: Boolean? = null,
-        url: String? = null,
-        cacheTime: Int? = null
+            callbackQueryId: String,
+            text: String? = null,
+            showAlert: Boolean? = null,
+            url: String? = null,
+            cacheTime: Int? = null
     ) = apiClient.answerCallbackQuery(
-        callbackQueryId,
-        text,
-        showAlert,
-        url,
-        cacheTime
+            callbackQueryId,
+            text,
+            showAlert,
+            url,
+            cacheTime
     ).call()
 
     /**
@@ -559,51 +556,51 @@ class Bot private constructor(
      */
 
     fun editMessageText(
-        chatId: Long? = null,
-        messageId: Long? = null,
-        inlineMessageId: String? = null,
-        text: String,
-        parseMode: ParseMode? = null,
-        disableWebPagePreview: Boolean? = null,
-        replyMarkup: ReplyMarkup? = null
+            chatId: Long? = null,
+            messageId: Long? = null,
+            inlineMessageId: String? = null,
+            text: String,
+            parseMode: ParseMode? = null,
+            disableWebPagePreview: Boolean? = null,
+            replyMarkup: ReplyMarkup? = null
     ) = apiClient.editMessageText(
-        chatId,
-        messageId,
-        inlineMessageId,
-        text,
-        parseMode?.modeName,
-        disableWebPagePreview,
-        replyMarkup
+            chatId,
+            messageId,
+            inlineMessageId,
+            text,
+            parseMode?.modeName,
+            disableWebPagePreview,
+            replyMarkup
     ).call()
 
     fun editMessageCaption(
-        chatId: Long? = null,
-        messageId: Long? = null,
-        inlineMessageId: String? = null,
-        caption: String,
-        replyMarkup: ReplyMarkup? = null
+            chatId: Long? = null,
+            messageId: Long? = null,
+            inlineMessageId: String? = null,
+            caption: String,
+            replyMarkup: ReplyMarkup? = null
     ) = apiClient.editMessageCaption(
-        chatId,
-        messageId,
-        inlineMessageId,
-        caption,
-        replyMarkup
+            chatId,
+            messageId,
+            inlineMessageId,
+            caption,
+            replyMarkup
     ).call()
 
     fun editMessageReplyMarkup(
-        chatId: Long? = null,
-        messageId: Long? = null,
-        inlineMessageId: String? = null,
-        replyMarkup: ReplyMarkup? = null
+            chatId: Long? = null,
+            messageId: Long? = null,
+            inlineMessageId: String? = null,
+            replyMarkup: ReplyMarkup? = null
     ) = apiClient.editMessageReplyMarkup(
-        chatId,
-        messageId,
-        inlineMessageId,
-        replyMarkup
+            chatId,
+            messageId,
+            inlineMessageId,
+            replyMarkup
     ).call()
 
     fun deleteMessage(chatId: Long? = null, messageId: Long? = null) =
-        apiClient.deleteMessage(chatId, messageId).call()
+            apiClient.deleteMessage(chatId, messageId).call()
 
     /**
      * Payments
@@ -620,57 +617,57 @@ class Bot private constructor(
      * @see PaymentInvoiceInfo
      */
     fun sendInvoice(
-        chatId: Long,
-        paymentInvoiceInfo: PaymentInvoiceInfo,
-        disableNotification: Boolean? = null,
-        replyToMessageId: Long? = null,
-        replyMarkup: InlineKeyboardMarkup? = null
+            chatId: Long,
+            paymentInvoiceInfo: PaymentInvoiceInfo,
+            disableNotification: Boolean? = null,
+            replyToMessageId: Long? = null,
+            replyMarkup: InlineKeyboardMarkup? = null
     ) = apiClient.sendInvoice(
-        chatId,
-        paymentInvoiceInfo.title,
-        paymentInvoiceInfo.description,
-        paymentInvoiceInfo.payload,
-        paymentInvoiceInfo.providerToken,
-        paymentInvoiceInfo.startParameter,
-        paymentInvoiceInfo.currency,
-        paymentInvoiceInfo.prices,
-        isFlexible = paymentInvoiceInfo.isFlexible,
-        providerData = paymentInvoiceInfo.providerData,
-        needShippingAddress = paymentInvoiceInfo.invoiceUserDetail?.needShippingAddress,
-        needPhoneNumber = paymentInvoiceInfo.invoiceUserDetail?.needPhoneNumber,
-        needName = paymentInvoiceInfo.invoiceUserDetail?.needName,
-        needEmail = paymentInvoiceInfo.invoiceUserDetail?.needEmail,
-        sendPhoneNumberToProvider = paymentInvoiceInfo.invoiceUserDetail?.sendPhoneNumberToProvider,
-        sendEmailToProvider = paymentInvoiceInfo.invoiceUserDetail?.sendEmailToProvider,
-        photoWidth = paymentInvoiceInfo.invoicePhoto?.photoWidth,
-        photoUrl = paymentInvoiceInfo.invoicePhoto?.photoUrl,
-        photoSize = paymentInvoiceInfo.invoicePhoto?.photoSize,
-        photoHeight = paymentInvoiceInfo.invoicePhoto?.photoHeight,
-        replyToMessageId = replyToMessageId,
-        disableNotification = disableNotification,
-        replyMarkup = replyMarkup
+            chatId,
+            paymentInvoiceInfo.title,
+            paymentInvoiceInfo.description,
+            paymentInvoiceInfo.payload,
+            paymentInvoiceInfo.providerToken,
+            paymentInvoiceInfo.startParameter,
+            paymentInvoiceInfo.currency,
+            paymentInvoiceInfo.prices,
+            isFlexible = paymentInvoiceInfo.isFlexible,
+            providerData = paymentInvoiceInfo.providerData,
+            needShippingAddress = paymentInvoiceInfo.invoiceUserDetail?.needShippingAddress,
+            needPhoneNumber = paymentInvoiceInfo.invoiceUserDetail?.needPhoneNumber,
+            needName = paymentInvoiceInfo.invoiceUserDetail?.needName,
+            needEmail = paymentInvoiceInfo.invoiceUserDetail?.needEmail,
+            sendPhoneNumberToProvider = paymentInvoiceInfo.invoiceUserDetail?.sendPhoneNumberToProvider,
+            sendEmailToProvider = paymentInvoiceInfo.invoiceUserDetail?.sendEmailToProvider,
+            photoWidth = paymentInvoiceInfo.invoicePhoto?.photoWidth,
+            photoUrl = paymentInvoiceInfo.invoicePhoto?.photoUrl,
+            photoSize = paymentInvoiceInfo.invoicePhoto?.photoSize,
+            photoHeight = paymentInvoiceInfo.invoicePhoto?.photoHeight,
+            replyToMessageId = replyToMessageId,
+            disableNotification = disableNotification,
+            replyMarkup = replyMarkup
     ).call()
 
     fun answerShippingQuery(
-        shippingQueryId: String,
-        ok: Boolean,
-        shippingOptions: List<ShippingOption>? = null,
-        errorMessage: String? = null
+            shippingQueryId: String,
+            ok: Boolean,
+            shippingOptions: List<ShippingOption>? = null,
+            errorMessage: String? = null
     ) = apiClient.answerShippingQuery(
-        shippingQueryId,
-        ok,
-        shippingOptions,
-        errorMessage
+            shippingQueryId,
+            ok,
+            shippingOptions,
+            errorMessage
     ).call()
 
     fun answerPreCheckoutQuery(
-        preCheckoutQueryId: String,
-        ok: Boolean,
-        errorMessage: String? = null
+            preCheckoutQueryId: String,
+            ok: Boolean,
+            errorMessage: String? = null
     ) = apiClient.answerPreCheckoutQuery(
-        preCheckoutQueryId,
-        ok,
-        errorMessage
+            preCheckoutQueryId,
+            ok,
+            errorMessage
     ).call()
 
     /***

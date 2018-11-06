@@ -39,10 +39,10 @@ data class FilePayload(val url: String? = null,
  * location payload
  *
  * @property lat: Latitude
- * @property lng: Longitude
+ * @property long: Longitude
  */
 data class LocationPayload(val lat: Double,
-                           val lng: Double) : Payload()
+                           val long: Double) : Payload()
 
 data class UploadPayload(val isReusable: Boolean,
                          val url: String? = null,
@@ -67,6 +67,7 @@ enum class TemplateType {
 data class FallbackPayload(
         val title: String,
         val url: String,
-        val type: AttachmentType) : Payload()
+        val type: AttachmentType,
+        val payload: String?) : Payload()
 
 

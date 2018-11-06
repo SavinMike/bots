@@ -30,7 +30,11 @@ fun Update.getStartPayload(delimiter: String = "-"): List<Pair<String, String>> 
         val split = parameters.split("&")
         split.map {
             val keyValue = it.split(delimiter)
-            Pair(keyValue[0], keyValue[1])
+            if (keyValue.size > 1) {
+                Pair(keyValue[0], keyValue[1])
+            } else {
+                Pair(it, it)
+            }
         }
     } ?: emptyList()
 }

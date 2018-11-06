@@ -53,7 +53,7 @@ object PageEntityTypeAdapter : JsonDeserializer<MessagingEntry> {
                 item.has("policy_enforcement") -> context.deserializeInst<MessagingPolicyEnforcementEvent>(item)
                 item.has("postback") -> context.deserializeInst<MessagingPostbacksEvent>(item)
                 item.has("pre_checkout") -> context.deserializeInst<MessagingPreCheckoutsEvent>(item)
-            //todo add MessagingHandoversEvent
+                //todo add MessagingHandoversEvent
                 else -> context.deserializeInst<UnknownWebhookEvent>(json)
             }
         }
@@ -67,27 +67,39 @@ object AttachmentTypeAdapter : JsonDeserializer<Attachment> {
         val type = jsonObject.getOrNull("type")?.asString ?: throw IllegalStateException("Unknown attachment type")
 
         val title = jsonObject.getOrNull("title")?.asString
-        val url = jsonObject.getOrNull("url")?.asString
+        val urlJson = jsonObject.getOrNull("url")
+        val url = if (urlJson?.isJsonNull == false) {
+            urlJson.asString
+        } else {
+            null
+        }
 
-        val payloadObject = jsonObject.getAsJsonObject("payload")
+        val payloadElement = jsonObject.getOrNull("payload")
 
         val valueOf = AttachmentType.valueOf(type)
-        val payload = when (valueOf) {
-            AttachmentType.image,
-            AttachmentType.audio,
-            AttachmentType.file,
-            AttachmentType.video -> context.deserialize<FilePayload>(payloadObject, FilePayload::class.java)
-            AttachmentType.location -> {
-                val coordinates = payloadObject.getAsJsonObject("coordinates")
-                context.deserialize<LocationPayload>(coordinates, LocationPayload::class.java)
-            }
-            AttachmentType.fallback -> {
-                val fallback = payloadObject.getAsJsonObject("fallback")
-                context.deserialize<FallbackPayload>(fallback, FallbackPayload::class.java)
-            }
-            AttachmentType.template -> {
-                val template = payloadObject.getAsJsonObject("template")
-                context.deserialize<TemplatePayload>(template, TemplatePayload::class.java)
+        val payload = payloadElement?.let { it ->
+            if (payloadElement.isJsonNull) {
+                null
+            } else {
+                val payloadObject = it.asJsonObject
+                when (valueOf) {
+                    AttachmentType.image,
+                    AttachmentType.audio,
+                    AttachmentType.file,
+                    AttachmentType.video -> context.deserialize<FilePayload>(payloadObject, FilePayload::class.java)
+                    AttachmentType.location -> {
+                        val coordinates = payloadObject.getAsJsonObject("coordinates")
+                        context.deserialize<LocationPayload>(coordinates, LocationPayload::class.java)
+                    }
+                    AttachmentType.fallback -> {
+                        val fallback = payloadObject.getAsJsonObject("fallback")
+                        context.deserialize<FallbackPayload>(fallback, FallbackPayload::class.java)
+                    }
+                    AttachmentType.template -> {
+                        val template = payloadObject.getAsJsonObject("template")
+                        context.deserialize<TemplatePayload>(template, TemplatePayload::class.java)
+                    }
+                }
             }
         }
 
