@@ -1,6 +1,7 @@
 package me.smu.bot.model.router
 
 import me.smu.bot.model.router.screen.Screen
+import me.smu.bot.model.router.screen.stack.BackScreenStrategy
 import me.smu.bot.model.router.screen.stack.ScreenStrategy
 import me.smu.bot.model.router.screen.stack.ScreenStrategyProvider
 import me.smu.bot.model.sope.Scope
@@ -30,7 +31,7 @@ interface ScreenRouter {
      * @param chatId - chat id which should go back
      * @return true if screen successfully removed from stack, false otherwise
      */
-    fun goBack(chatId: Long): Boolean
+    fun goBack(chatId: Long, backScreenStrategy: BackScreenStrategy? = null): Boolean
 
     /**
      * Try to restart current screen for chat

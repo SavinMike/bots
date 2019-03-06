@@ -1,17 +1,12 @@
 package me.smu.bot.model.router
 
 import me.smu.bot.BotApplication
+import me.smu.bot.model.bus.EventBus
+import me.smu.bot.model.bus.event.ChangeScreenEvent
 import me.smu.bot.model.router.screen.Screen
 import me.smu.bot.model.router.screen.ScreenProvider
 import me.smu.bot.model.router.screen.ScreenViewer
-import me.smu.bot.model.router.screen.stack.AddToEndScreenStrategy
-import me.smu.bot.model.router.screen.stack.BackScreenStrategy
-import me.smu.bot.model.router.screen.stack.ClearScopeScreenStrategy
-import me.smu.bot.model.router.screen.stack.ClearScreenStrategy
-import me.smu.bot.model.router.screen.stack.RemoveCurrentScreenStrategy
-import me.smu.bot.model.router.screen.stack.ScreenStackManager
-import me.smu.bot.model.router.screen.stack.ScreenStrategy
-import me.smu.bot.model.router.screen.stack.ScreenStrategyProvider
+import me.smu.bot.model.router.screen.stack.*
 import me.smu.bot.model.sope.Scope
 
 fun BotApplication.Builder.router(body: BotScreenRouter.Builder.() -> Unit) {
@@ -43,18 +38,19 @@ open class BotScreenRouter constructor(private val screenViewer: ScreenViewer,
 
     override fun currentScreen(chatId: Long): Screen? {
         return screenStackManagers
-            .firstOrNull { it.chatId == chatId }?.currentScreen
+                .firstOrNull { it.chatId == chatId }?.currentScreen
     }
 
     override fun <S : Screen> goToScreen(screen: S, newInstance: Boolean, screenStrategy: ScreenStrategy): Boolean {
         if (screenViewer(screen, newInstance)) {
             val screenStackManager = screenStackManagers.firstOrNull { it.chatId == screen.chatId }
-                    ?: screenStackManagers.run {
-                        val screenStackManager = ScreenStackManager(screen.chatId)
-                        screenStackManagers.add(screenStackManager)
-                        screenStackManager
-                    }
+                ?: screenStackManagers.run {
+                    val screenStackManager = ScreenStackManager(screen.chatId)
+                    screenStackManagers.add(screenStackManager)
+                    screenStackManager
+                }
 
+            EventBus.sendEvent(ChangeScreenEvent(screen.chatId, currentScreen(chatId = screen.chatId), screen))
             screenStackManager.addScreen(screen, screenStrategy)
 
             return true
@@ -74,11 +70,12 @@ open class BotScreenRouter constructor(private val screenViewer: ScreenViewer,
         return popStack(chatId, ClearScopeScreenStrategy(scope), replaceScreen)
     }
 
-    override fun goBack(chatId: Long): Boolean {
+    override fun goBack(chatId: Long, backScreenStrategy: BackScreenStrategy?): Boolean {
         val screenStackManager = screenStackManagers.firstOrNull { it.chatId == chatId }
         val currentScreen = screenStackManager?.currentScreen
 
-        val screenStrategy = if (currentScreen == null) null else screenStrategyProvider.provideBackScreenStrategy(currentScreen)
+        val screenStrategy = backScreenStrategy
+            ?: if (currentScreen == null) null else screenStrategyProvider.provideBackScreenStrategy(currentScreen)
 
         return popStack(chatId, backScreenStrategy = screenStrategy)
     }
@@ -126,10 +123,10 @@ open class BotScreenRouter constructor(private val screenViewer: ScreenViewer,
 
         private fun build(): ScreenRouter {
             return BotScreenRouter(
-                screenViewer = screenViewer,
-                emptySessionScreenProvider = emptySessionScreenProvider,
-                startScreenProvider = startScreenProvider,
-                screenStrategyProvider = screenStrategyProvider)
+                    screenViewer = screenViewer,
+                    emptySessionScreenProvider = emptySessionScreenProvider,
+                    startScreenProvider = startScreenProvider,
+                    screenStrategyProvider = screenStrategyProvider)
         }
 
         fun build(body: Builder.() -> Unit): ScreenRouter {
